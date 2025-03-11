@@ -1,8 +1,8 @@
 "use strict";
 /**we create an array of objects, where each object contains information about the image:
-preview — a link to a small image for the gallery.
-original — a link to a large image that opens in a modal window.
-description — a text description of the image (used for alt and caption). */
+ * preview — a link to a small image for the gallery.
+ * original — a link to a large image that opens in a modal window.
+ * description — a text description of the image (used for alt and caption). */
 const images = [
   {
     preview:
@@ -69,10 +69,16 @@ const images = [
   },
 ];
 
-// Знаходимо HTML-елемент <ul class="gallery">
+// We find the HTML element <ul class="gallery">, to which we will add images.
 const galleryContainer = document.querySelector(".gallery");
-
-// Функція для створення HTML-розмітки
+/**Function for creating HTML markup .map(...) — iterate over the images array and generate HTML markup for each object.
+ * ({ preview, original, description }) => ... — use object destructuring to get its properties.
+ * <li class="gallery-item">...</li> — each gallery item contains:
+ * <a class="gallery-link"> — link (to make the image clickable).
+ * <img> — the image itself:
+ * src="${preview}" — shows a small image.
+ * data-source="${original}" — stores a link to a large image.
+ * alt="${description}" — text description (for accessibility).*/
 function createMarkup(array) {
   return array
     .map(
@@ -88,25 +94,26 @@ function createMarkup(array) {
         </a>
       </li>`
     )
-    .join("");
+    .join(""); //join all elements into a string (without a separator).
 }
 
-// Додаємо розмітку у список
+// insert the generated HTML markup at the end of galleryContainer.
 galleryContainer.insertAdjacentHTML("beforeend", createMarkup(images));
 
-// Додаємо обробник подій для відкриття модального вікна
 galleryContainer.addEventListener("click", (event) => {
-  event.preventDefault();
-
+  event.preventDefault(); //Preventing standard browser behavior
+  /**Checking whether the image was clicked.
+   * If the user clicks on the background (<li>, <a>, or another element),
+   * the code will not open a modal window. */
   if (!event.target.classList.contains("gallery-image")) {
     return;
   }
 
-  const largeImageURL = event.target.dataset.source;
-
+  const largeImageURL = event.target.dataset.source; //Get a link to a large image
+  //Creating a modal window
   const instance = basicLightbox.create(`
     <img src="${largeImageURL}">
   `);
 
-  instance.show();
+  instance.show(); //Displaying a modal window
 });
